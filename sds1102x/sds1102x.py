@@ -14,13 +14,13 @@ matplotlib.use('TkAgg')
 
 # Modul zur Steuerung eines Siglent SDS1102X DSO
 class Trace:
-    def __init__(self):
+    def __init__(self,instrument):
         self.time = []
         self.volt = []
         self.freq = []
         self.spectrum = []
         self.samplingrate = 0
-        self.dso = 0
+        self.dso = instrument
         self.timedivision = 0
         self.voltagedivision = 0
         self.offset = 0
@@ -165,22 +165,24 @@ class Trace:
         show()
         return '-DONE-'
 
+    def setGain(self,channel,voltperdiv):
+        self.dso.write("c" + str(channel) + ":vdiv "+str(voltperdiv)+"V")
 
-
-
+    def setOffset(self,channel,volt):
+        self.dso.write("c" + str(channel) + ":ofst " + str(volt) + "V")
 
 
 
 # main
-_rm = visa.ResourceManager()
-sds = _rm.open_resource("TCPIP::192.168.178.66::INSTR")
+#_rm = visa.ResourceManager()
+#sds = _rm.open_resource("TCPIP::192.168.178.66::INSTR")
 
-TestScope = Trace()
-TestScope.dso = sds
-print(TestScope.getIdentity())
-print(TestScope.getTrace(1))
-print(TestScope.calcFFT())
-print(TestScope.plotSpectrum("Testspektrum"))
+#TestScope = Trace()
+#TestScope.dso = sds
+#print(TestScope.getIdentity())
+#print(TestScope.getTrace(1))
+#print(TestScope.calcFFT())
+#print(TestScope.plotTrace("Testspektrum"))
 #FFT-Berechnung
 #N = len(TestScope.volt)
 #N_fast = next_fast_len(N)
